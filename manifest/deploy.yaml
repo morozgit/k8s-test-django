@@ -16,39 +16,39 @@ spec:
     spec:
       containers:
       - name: django-web
-        image: morozdocker/django_app_k8_test:Dv1
+        image: morozdocker/django_app_k8_test:Rv1
         ports:
         - containerPort: 80
         env:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: secret
+              name: django-secrets
               key: SECRET_KEY
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: secret
+              name: django-secrets
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: secret
+              name: django-secrets
               key: POSTGRES_PASSWORD
         - name: POSTGRES_HOST
           valueFrom:
             secretKeyRef:
-              name: secret
+              name: django-secrets
               key: POSTGRES_HOST
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
-              name: secret
+              name: django-secrets
               key: POSTGRES_DB
         - name: DEBUG
-          value: "False"
+          value: "True"
         - name: ALLOWED_HOSTS
-          value: ['*']
+          value: '*'
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
