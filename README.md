@@ -75,3 +75,27 @@ $ docker compose build web
 `ALLOWED_HOSTS` -- настройка Django со списком разрешённых адресов. Если запрос прилетит на другой адрес, то сайт ответит ошибкой 400. Можно перечислить несколько адресов через запятую, например `127.0.0.1,192.168.0.1,site.test`. [Документация Django](https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts).
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
+
+## Cоздание Secret в кластере
+
+`SECRET_KEY: <base64-encoded-secret-key>`
+
+`POSTGRES_USER: <base64-encoded-postgres-user>`
+
+`POSTGRES_PASSWORD: <base64-encoded-postgres-password>`
+
+`POSTGRES_HOST: <base64-encoded-postgres-host>`
+  
+`POSTGRES_DB: <base64-encoded-postgres-db>`
+
+Замените эти значения с помощью команды.
+
+```bash
+echo -n 'value' | base64
+```
+Подставте полученное в файл secret.yaml.
+
+### Применение 
+```bash
+kubectl apply -f secret.yaml
+```
