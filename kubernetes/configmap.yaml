@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+  namespace: edu-stoic-dubinsky
+  labels:
+    app: django
+data:
+  DEBUG: "True"
+  ALLOWED_HOSTS: "127.0.0.1,localhost,edu-stoic-dubinsky.sirius-k8s.dvmn.org"

@@ -99,3 +99,83 @@ echo -n 'value' | base64
 ```bash
 kubectl apply -f secret.yaml
 ```
+
+## Запуск Django в Yandex Cloud
+
+### Подключение к Yandex Cloud (CLI)
+1.Следуйте инструкциям на официальном сайте [Yandex Cloud](https://cloud.yandex.com/en/docs/cli/quickstart), чтобы установить CLI для вашей операционной системы.
+
+2.После установки CLI выполните команду `yc init`, чтобы авторизоваться и выбрать нужный проект.
+
+### Деплой кода
+
+#### Загрузка Docker Image на [DockerHub](https://hub.docker.com/)
+1.Авторизуйтесь на [DockerHub](https://hub.docker.com/)
+
+2.Локально соберите Docker-образ:
+
+```
+docker build -t <image-name>:<tag> 
+```
+
+3.Загрузите образ на [DockerHub](https://hub.docker.com/), заменив <YOUR-USERNAME> на ваш Docker ID:
+
+```
+docker tag <image-name>:<tag> YOUR-USERNAME/<image-name>:<tag>
+```
+```
+docker push YOUR-USERNAME/<image-name>:<tag>
+```
+#### Подготовка dev окружения
+1.В файле configmap.yaml подставьте свои значения переменных окружения.
+
+Создайте config-файл:
+
+```
+kubectl -n <namespace> apply -f configmap.yaml
+```
+
+2.Получите SSL-сертификат для подключения к PostgreSQL:
+
+Linux/Bash или macOS(Zsh):
+```
+mkdir -p ~/.postgresql && \
+wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" \
+     --output-document ~/.postgresql/root.crt && \
+chmod 0600 ~/.postgresql/root.crt
+```
+Windows(PowerShell):
+```
+mkdir $HOME\.postgresql; curl.exe -o $HOME\.postgresql\root.crt https://storage.yandexcloud.net/cloud-certs/CA.pem
+```
+Создайте Secret с сертификатом:
+
+```
+kubectl create secret generic postgresql-ssl -n <namespace> --from-file=/path_to/root.crt
+```
+`/path_to/root.crt` путь где лежит root.crt
+#### Запуск приложения
+1.Разверните Django-приложение в кластере:
+
+```
+kubectl -n <namespace> apply -f deployment.yaml
+```
+2.В файле service.yaml замените значение nodePort: 30371 на свое, согласно настройкам ALB-роутера.
+
+Запустите сервис:
+
+```
+kubectl -n <namespace> apply -f service.yaml
+```
+
+3.Примените миграции:
+```
+kubectl -n <namespace> apply -f migrate.yaml
+```
+
+4.Для очистки сессий, запустите clearsessions:
+```
+kubectl -n <namespace> apply -f clearsessions.yaml
+```
+Теперь ваш сайт доступен по ссылке [edu-stoic-dubinsky.sirius-k8s.dvmn.org](https://edu-stoic-dubinsky.sirius-k8s.dvmn.org/).
+

@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: django-migrate
+  namespace: edu-stoic-dubinsky
 spec:
   ttlSecondsAfterFinished: 720
   template:
