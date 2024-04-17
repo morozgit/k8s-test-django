@@ -177,5 +177,7 @@ kubectl -n <namespace> apply -f migrate.yaml
 ```
 kubectl -n <namespace> apply -f clearsessions.yaml
 ```
+[Cсылка на описание выделенных ресурсов облачной инфраструктуры](https://sirius-env-registry.website.yandexcloud.net/edu-stoic-dubinsky.html)
+
 Теперь ваш сайт доступен по ссылке [edu-stoic-dubinsky.sirius-k8s.dvmn.org](https://edu-stoic-dubinsky.sirius-k8s.dvmn.org/).
 
